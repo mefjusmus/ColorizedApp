@@ -38,22 +38,22 @@ class ViewController: UIViewController {
         switch sender.tag {
         case 1:
             colorComponents.red = CGFloat(redSlider.value)
-            redLabel.text = String(format: "%.1f", redSlider.value)
+            redLabel.text = String(format: "%.2f", redSlider.value)
         case 2:
             colorComponents.green = CGFloat(greenSlider.value)
-            greenLabel.text = String(format: "%.1f", greenSlider.value)
+            greenLabel.text = String(format: "%.2f", greenSlider.value)
         default:
             colorComponents.blue = CGFloat(blueSlider.value)
-            blueLabel.text = String(format: "%.1f", blueSlider.value)
+            blueLabel.text = String(format: "%.2f", blueSlider.value)
         }
         colorView.backgroundColor = getCurrentColor()
     }
 
     //MARK: Private Methods
     private func setStartLabelValues() {
-        redLabel.text = String(format: "%.1f", redSlider.value)
-        greenLabel.text = String(format: "%.1f", greenSlider.value)
-        blueLabel.text = String(format: "%.1f", blueSlider.value)
+        redLabel.text = String(format: "%.2f", redSlider.value)
+        greenLabel.text = String(format: "%.2f", greenSlider.value)
+        blueLabel.text = String(format: "%.2f", blueSlider.value)
     }
     
     private func getCurrentColor() -> UIColor {
