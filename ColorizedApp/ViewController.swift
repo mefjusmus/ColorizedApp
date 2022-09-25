@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         colorView.layer.cornerRadius = 20
-        colorView.backgroundColor = getCurrentColor()
+        colorView.backgroundColor = .black
         redSlider.tag = 1
         greenSlider.tag = 2
         setStartLabelValues()
@@ -46,7 +46,8 @@ class ViewController: UIViewController {
             colorComponents.blue = CGFloat(blueSlider.value)
             blueLabel.text = String(format: "%.2f", blueSlider.value)
         }
-        colorView.backgroundColor = getCurrentColor()
+        
+        setupCurrentColor()
     }
 
     //MARK: Private Methods
@@ -56,12 +57,11 @@ class ViewController: UIViewController {
         blueLabel.text = String(format: "%.2f", blueSlider.value)
     }
     
-    private func getCurrentColor() -> UIColor {
-        let currentColor = UIColor(red: colorComponents.red,
-                               green: colorComponents.green,
-                               blue: colorComponents.blue,
-                               alpha: 1)
-        return currentColor
+    private func setupCurrentColor() {
+        colorView.backgroundColor = UIColor(red: colorComponents.red,
+                                            green: colorComponents.green,
+                                            blue: colorComponents.blue,
+                                            alpha: 1)
     }
 
 
