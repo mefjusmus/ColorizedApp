@@ -27,28 +27,27 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         colorView.layer.cornerRadius = 20
         colorView.backgroundColor = .black
+        redSlider.tag = 1
+        greenSlider.tag = 2
         setStartLabelValues()
     }
     
     //MARK: IBActions
-    @IBAction func redSliderDidMoved(_ sender: UISlider) {
-        colorComponents.red = CGFloat(sender.value)
-        redLabel.text = String(format: "%.1f", sender.value)
-        setColor()
+    @IBAction func sliderDidMoved(_ sender: UISlider) {
+        switch sender.tag {
+        case 1:
+            colorComponents.red = CGFloat(redSlider.value)
+            redLabel.text = String(format: "%.1f", redSlider.value)
+        case 2:
+            colorComponents.green = CGFloat(greenSlider.value)
+            greenLabel.text = String(format: "%.1f", greenSlider.value)
+        default:
+            colorComponents.blue = CGFloat(blueSlider.value)
+            blueLabel.text = String(format: "%.1f", blueSlider.value)
+        }
+        setupColor()
     }
-    
-    @IBAction func greenSliderDidMoved(_ sender: UISlider) {
-        colorComponents.green = CGFloat(sender.value)
-        greenLabel.text = String(format: "%.1f", sender.value)
-        setColor()
-    }
-    
-    @IBAction func blueSliderDidMoved(_ sender: UISlider) {
-        colorComponents.blue = CGFloat(sender.value)
-        blueLabel.text = String(format: "%.1f", sender.value)
-        setColor()
-    }
-    
+
     //MARK: Private Methods
     
     private func setStartLabelValues() {
@@ -57,7 +56,7 @@ class ViewController: UIViewController {
         blueLabel.text = String(format: "%.1f", blueSlider.value)
     }
     
-    private func setColor() {
+    private func setupColor() {
         colorView.backgroundColor = UIColor(red: colorComponents.red,
                                             green: colorComponents.green,
                                             blue: colorComponents.blue,
