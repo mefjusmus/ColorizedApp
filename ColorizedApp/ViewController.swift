@@ -21,9 +21,6 @@ class ViewController: UIViewController {
     @IBOutlet var greenSlider: UISlider!
     @IBOutlet var blueSlider: UISlider!
     
-//    MARK: Private Properties
-    private let colorComponents = ColorComponents()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         colorView.layer.cornerRadius = 20
@@ -37,13 +34,10 @@ class ViewController: UIViewController {
     @IBAction func sliderDidMoved(_ sender: UISlider) {
         switch sender.tag {
         case 1:
-            colorComponents.red = CGFloat(redSlider.value)
             redLabel.text = String(format: "%.2f", redSlider.value)
         case 2:
-            colorComponents.green = CGFloat(greenSlider.value)
             greenLabel.text = String(format: "%.2f", greenSlider.value)
         default:
-            colorComponents.blue = CGFloat(blueSlider.value)
             blueLabel.text = String(format: "%.2f", blueSlider.value)
         }
         
@@ -58,9 +52,9 @@ class ViewController: UIViewController {
     }
     
     private func setupCurrentColor() {
-        colorView.backgroundColor = UIColor(red: colorComponents.red,
-                                            green: colorComponents.green,
-                                            blue: colorComponents.blue,
+        colorView.backgroundColor = UIColor(red: CGFloat(redSlider.value),
+                                            green: CGFloat(greenSlider.value),
+                                            blue: CGFloat(blueSlider.value),
                                             alpha: 1)
     }
 
