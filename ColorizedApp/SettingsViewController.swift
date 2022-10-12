@@ -54,10 +54,13 @@ class SettingsViewController: UIViewController {
         switch sender {
         case redSlider:
             redLabel.text = string(from: sender)
+            redTextField.text = string(from: sender)
         case greenSlider:
             greenLabel.text = string(from: sender)
+            greenTextField.text = string(from: sender)
         default:
             blueLabel.text = string(from: sender)
+            blueTextField.text = string(from: sender)
         }
         setCurrentColor()
     }
@@ -97,7 +100,13 @@ class SettingsViewController: UIViewController {
             target: self,
             action: #selector(hideKeyboard)
         )
-        toolBar.items = [doneButton]
+        let spacer = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: self,
+            action: nil
+        )
+        
+        toolBar.items = [spacer, doneButton]
         toolBar.sizeToFit()
         redTextField.inputAccessoryView = toolBar
         greenTextField.inputAccessoryView = toolBar
@@ -112,7 +121,7 @@ class SettingsViewController: UIViewController {
         String(format: "%.2f", slider.value)
     }
     
-    private func showAlert(_ title: String, _ message: String,_ handler: ((UIAlertAction) -> Void)?) {
+    private func showAlert(title: String, message: String, handler: ((UIAlertAction) -> Void)?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
         self.present(alert, animated: true, completion: nil)
@@ -121,6 +130,7 @@ class SettingsViewController: UIViewController {
 
 //MARK: TextField Delegate
 extension SettingsViewController: UITextFieldDelegate {
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         
         guard let inputValue = textField.text, textField.text != nil else { return }
@@ -128,13 +138,11 @@ extension SettingsViewController: UITextFieldDelegate {
         
         if inputFloat > Float(1) {
             showAlert(
-                "Incorrect input",
-                "Only in range 0...1") { _ in
-                    textField.text = ""
-                }
+                title: "Incorrect input",
+                message: "Values are only in range 0...1") { _ in
+                textField.text = ""
+            }
         }
-        
-//        let inputFloatValue = Float(textField.text ?? "0.0") ?? 0.0
         
         switch textField {
         case redTextField:
