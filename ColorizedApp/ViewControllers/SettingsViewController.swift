@@ -152,7 +152,7 @@ extension SettingsViewController: UITextFieldDelegate {
         
         if inputFloat > Float(1) {
             showAlert(message: "Only values in the range 0...1 allowed") { _ in
-                textField.text = ""
+                self.setInitialTextFieldsValues()
             }
             return
         }
