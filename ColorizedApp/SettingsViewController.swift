@@ -21,6 +21,10 @@ class SettingsViewController: UIViewController {
     @IBOutlet var greenSlider: UISlider!
     @IBOutlet var blueSlider: UISlider!
     
+    @IBOutlet var redTextField: UITextField!
+    @IBOutlet var greenTextField: UITextField!
+    @IBOutlet var blueTextField: UITextField!
+    
 //    MARK: Public properties
     var startColor: UIColor!
     var delegate: SettingsViewControllerDelegate!
@@ -29,9 +33,20 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         colorView.layer.cornerRadius = 20
+        
         setSliderValues()
         setStartLabelValues()
         setCurrentColor()
+        setToolbarForKeyboard()
+        
+        redTextField.delegate = self
+        greenTextField.delegate = self
+        blueTextField.delegate = self
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        hideKeyboard()
     }
     
     //MARK: IBActions
@@ -51,6 +66,7 @@ class SettingsViewController: UIViewController {
         delegate.setBackgroundColor(with: colorView.backgroundColor ?? UIColor.clear)
         dismiss(animated: true)
     }
+    
     
 
     //MARK: Private Methods
@@ -73,10 +89,65 @@ class SettingsViewController: UIViewController {
                                             alpha: 1)
     }
     
+    private func setToolbarForKeyboard() {
+        let toolBar = UIToolbar()
+        let doneButton = UIBarButtonItem(
+            title: "Done",
+            style: .done,
+            target: self,
+            action: #selector(hideKeyboard)
+        )
+        toolBar.items = [doneButton]
+        toolBar.sizeToFit()
+        redTextField.inputAccessoryView = toolBar
+        greenTextField.inputAccessoryView = toolBar
+        blueTextField.inputAccessoryView = toolBar
+    }
+    
+    @objc private func hideKeyboard() {
+        view.endEditing(true)
+    }
+    
     private func string(from slider: UISlider) -> String {
         String(format: "%.2f", slider.value)
     }
+    
+    private func showAlert(_ title: String, _ message: String,_ handler: ((UIAlertAction) -> Void)?) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
+        self.present(alert, animated: true, completion: nil)
+    }
+}
 
-
+//MARK: TextField Delegate
+extension SettingsViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        guard let inputValue = textField.text, textField.text != nil else { return }
+        guard let inputFloat = Float(inputValue) else { return }
+        
+        if inputFloat > Float(1) {
+            showAlert(
+                "Incorrect input",
+                "Only in range 0...1") { _ in
+                    textField.text = ""
+                }
+        }
+        
+//        let inputFloatValue = Float(textField.text ?? "0.0") ?? 0.0
+        
+        switch textField {
+        case redTextField:
+            redSlider.setValue(inputFloat, animated: true)
+            redLabel.text = textField.text
+        case greenTextField:
+            greenSlider.setValue(inputFloat, animated: true)
+            greenLabel.text = textField.text
+        default:
+            blueSlider.setValue(inputFloat, animated: true)
+            blueLabel.text = textField.text
+        }
+        setCurrentColor()
+    }
 }
 
