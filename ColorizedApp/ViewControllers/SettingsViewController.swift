@@ -128,7 +128,11 @@ class SettingsViewController: UIViewController {
         String(format: "%.2f", slider.value)
     }
     
-    private func showAlert(title: String = "Incorrect input", message: String, handler: ((UIAlertAction) -> Void)?) {
+    private func showAlert(
+        title: String = "Incorrect input",
+        message: String,
+        handler: ((UIAlertAction) -> Void)? = nil
+    ) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
         present(alert, animated: true, completion: nil)
