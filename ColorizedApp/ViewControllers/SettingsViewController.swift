@@ -35,7 +35,8 @@ class SettingsViewController: UIViewController {
         colorView.layer.cornerRadius = 20
         
         setSliderValues()
-        setStartLabelValues()
+        setInitialLabelsValues()
+        setInitialTextFieldsValues()
         setCurrentColor()
         setToolbarForKeyboard()
         
@@ -79,10 +80,16 @@ class SettingsViewController: UIViewController {
         blueSlider.value = Float(CIColor(color: startColor).blue)
     }
     
-    private func setStartLabelValues() {
+    private func setInitialLabelsValues() {
         redLabel.text = string(from: redSlider)
         greenLabel.text = string(from: greenSlider)
         blueLabel.text = string(from: blueSlider)
+    }
+    
+    private func setInitialTextFieldsValues() {
+        redTextField.text = string(from: redSlider)
+        greenTextField.text = string(from: greenSlider)
+        blueTextField.text = string(from: blueSlider)
     }
     
     private func setCurrentColor() {
@@ -124,7 +131,7 @@ class SettingsViewController: UIViewController {
     private func showAlert(title: String, message: String, handler: ((UIAlertAction) -> Void)?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -132,16 +139,22 @@ class SettingsViewController: UIViewController {
 extension SettingsViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        guard let inputValue = textField.text, textField.text != nil else { return }
-        guard let inputFloat = Float(inputValue) else { return }
+        guard let inputFloat = Float(textField.text ?? "") else {
+            showAlert(
+                title: "Incorrect input",
+                message: "Enter the new value") { _ in
+                    self.setInitialTextFieldsValues()
+                }
+            return
+        }
         
         if inputFloat > Float(1) {
             showAlert(
                 title: "Incorrect input",
-                message: "Values are only in range 0...1") { _ in
+                message: "Only values in the range 0...1 allowed") { _ in
                 textField.text = ""
             }
+            return
         }
         
         switch textField {
@@ -156,6 +169,10 @@ extension SettingsViewController: UITextFieldDelegate {
             blueLabel.text = textField.text
         }
         setCurrentColor()
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.text = ""
     }
 }
 
