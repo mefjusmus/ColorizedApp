@@ -128,7 +128,7 @@ class SettingsViewController: UIViewController {
         String(format: "%.2f", slider.value)
     }
     
-    private func showAlert(title: String, message: String, handler: ((UIAlertAction) -> Void)?) {
+    private func showAlert(title: String = "Incorrect input", message: String, handler: ((UIAlertAction) -> Void)?) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: handler))
         present(alert, animated: true, completion: nil)
@@ -140,18 +140,14 @@ extension SettingsViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         guard let inputFloat = Float(textField.text ?? "") else {
-            showAlert(
-                title: "Incorrect input",
-                message: "Enter the new value") { _ in
-                    self.setInitialTextFieldsValues()
-                }
+            showAlert(message: "Enter the new value") { _ in
+                self.setInitialTextFieldsValues()
+            }
             return
         }
         
         if inputFloat > Float(1) {
-            showAlert(
-                title: "Incorrect input",
-                message: "Only values in the range 0...1 allowed") { _ in
+            showAlert(message: "Only values in the range 0...1 allowed") { _ in
                 textField.text = ""
             }
             return
