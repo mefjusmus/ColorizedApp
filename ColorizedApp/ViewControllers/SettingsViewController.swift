@@ -38,7 +38,6 @@ class SettingsViewController: UIViewController {
         setInitialLabelsValues()
         setInitialTextFieldsValues()
         setCurrentColor()
-        setToolbarForKeyboard()
         
         redTextField.delegate = self
         greenTextField.delegate = self
@@ -47,7 +46,7 @@ class SettingsViewController: UIViewController {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        hideKeyboard()
+        view.endEditing(true)
     }
     
     //MARK: IBActions
@@ -99,31 +98,6 @@ class SettingsViewController: UIViewController {
                                             alpha: 1)
     }
     
-    private func setToolbarForKeyboard() {
-        let toolBar = UIToolbar()
-        let doneButton = UIBarButtonItem(
-            title: "Done",
-            style: .done,
-            target: self,
-            action: #selector(hideKeyboard)
-        )
-        let spacer = UIBarButtonItem(
-            barButtonSystemItem: .flexibleSpace,
-            target: self,
-            action: nil
-        )
-        
-        toolBar.items = [spacer, doneButton]
-        toolBar.sizeToFit()
-        redTextField.inputAccessoryView = toolBar
-        greenTextField.inputAccessoryView = toolBar
-        blueTextField.inputAccessoryView = toolBar
-    }
-    
-    @objc private func hideKeyboard() {
-        view.endEditing(true)
-    }
-    
     private func string(from slider: UISlider) -> String {
         String(format: "%.2f", slider.value)
     }
@@ -142,10 +116,31 @@ class SettingsViewController: UIViewController {
 //MARK: TextField Delegate
 extension SettingsViewController: UITextFieldDelegate {
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        let toolBar = UIToolbar()
+        let doneButton = UIBarButtonItem(
+            title: "Done",
+            style: .done,
+            target: textField,
+            action: #selector(resignFirstResponder)
+        )
+        let spacer = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: self,
+            action: nil
+        )
+        
+        toolBar.items = [spacer, doneButton]
+        toolBar.sizeToFit()
+        
+        textField.inputAccessoryView = toolBar
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         guard let inputFloat = Float(textField.text ?? "") else {
             showAlert(message: "Enter the new value") { _ in
                 self.setInitialTextFieldsValues()
+                textField.becomeFirstResponder()
             }
             return
         }
@@ -153,6 +148,7 @@ extension SettingsViewController: UITextFieldDelegate {
         if inputFloat > Float(1) {
             showAlert(message: "Only values in the range 0...1 allowed") { _ in
                 self.setInitialTextFieldsValues()
+                textField.becomeFirstResponder()
             }
             return
         }
@@ -169,10 +165,6 @@ extension SettingsViewController: UITextFieldDelegate {
             blueLabel.text = textField.text
         }
         setCurrentColor()
-    }
-    
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.text = ""
     }
 }
 
